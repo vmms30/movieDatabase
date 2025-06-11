@@ -5,6 +5,7 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import Home from './pages/Home';
 import Favourites from './pages/Favourites';
+import SearchPage from './pages/SearchPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/favourites' element={<Favourites/>}/>
+        <Route path='/search'element={<SearchPage />}/>
         <Route />
       </Routes>
   </Router>
