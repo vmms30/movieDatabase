@@ -36,3 +36,34 @@ export const getTrendingMovies = async (timeWindow = "day") => {
 };
 
 // You could add more functions here, e.g., getMovieDetails, searchMovies etc.
+
+// NEW: Function to search movies
+export const searchMovies = async (query, page = 1, year = null) => {
+  try {
+    const params = { query, page };
+    if (year && year.length === 4 && !isNaN(year)) {
+      // Basic year validation
+      params.primary_release_year = year;
+    }
+    // Note: The /search/movie endpoint does not directly support genre_ids as a filter.
+    // Genre filtering on search results would typically be done client-side on the current page's results,
+    // or by using the /discover/movie endpoint if genre is a primary criterion (which has its own complexities).
+    // For this "basic implementation", we'll pass the year and handle genre filtering client-side if applied.
+    const response = await apiClient.get("/search/movie", { params });
+    return response.data; // Contains results, page, total_pages, total_results
+  } catch (error) {
+    console.error("Error searching movies:", error);
+    throw error;
+  }
+};
+
+// NEW: Function to get movie genres
+export const getMovieGenres = async () => {
+  try {
+    const response = await apiClient.get("/genre/movie/list");
+    return response.data.genres; // Array of {id, name}
+  } catch (error) {
+    console.error("Error fetching movie genres:", error);
+    throw error;
+  }
+};
