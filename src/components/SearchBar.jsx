@@ -5,11 +5,6 @@ import { Form, Row, Col, Button } from 'react-bootstrap';
 const SearchBar = ({
   searchQuery,
   onSearchQueryChange,
-  yearFilter,
-  onYearFilterChange,
-  genreFilter,
-  onGenreFilterChange,
-  genres, // [{id, name}, ...]
   onSubmit,
 }) => {
   const handleFormSubmit = (e) => {

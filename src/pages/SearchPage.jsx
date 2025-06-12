@@ -9,9 +9,6 @@ import { searchMovies, getMovieGenres } from '../services/tmdbService';
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [yearFilter, setYearFilter] = useState('');
-  const [genreFilter, setGenreFilter] = useState(''); // Stores genre ID
-  const [genres, setGenres] = useState([]); // For genre dropdown [{id, name}, ...]
 
   const [searchResults, setSearchResults] = useState([]);
   const [filteredResults, setFilteredResults] = useState([]); // For client-side genre filtering
@@ -29,7 +26,6 @@ const SearchPage = () => {
     const fetchGenres = async () => {
       try {
         const genreData = await getMovieGenres();
-        setGenres(genreData || []);
       } catch (err) {
         console.error("Failed to fetch genres", err);
         // setError("Could not load genres for filtering."); // Optional: show error for genres
@@ -84,7 +80,7 @@ const SearchPage = () => {
     debounceTimeoutRef.current = setTimeout(() => {
       // When query or year changes, reset to page 1
       setCurrentPage(1); 
-      performSearch(searchQuery, 1, yearFilter);
+      performSearch(searchQuery, 1,);
     }, 500); // 500ms debounce
 
     return () => {
@@ -92,7 +88,7 @@ const SearchPage = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
     };
-  }, [searchQuery, yearFilter, performSearch, initialLoad]);
+  }, [performSearch, initialLoad]);
 
 
   // Effect for page changes (no debounce needed)
@@ -105,13 +101,9 @@ const SearchPage = () => {
 
   // Client-side filtering for genre
   useEffect(() => {
-    if (!genreFilter) {
-      setFilteredResults(searchResults); // No genre filter, show all search results
-      return;
-    }
-    const genreId = parseInt(genreFilter);
+    
     const clientFiltered = searchResults.filter(movie => 
-      movie.genre_ids && movie.genre_ids.includes(genreId)
+      movie.genre_ids 
     );
     setFilteredResults(clientFiltered);
     if (searchResults.length > 0 && clientFiltered.length === 0) {
@@ -119,7 +111,7 @@ const SearchPage = () => {
     } else if (clientFiltered.length > 0) {
         setNoResults(false);
     }
-  }, [genreFilter, searchResults]);
+  }, [ searchResults]);
 
 
   const handlePageChange = (page) => {
@@ -135,7 +127,7 @@ const SearchPage = () => {
       clearTimeout(debounceTimeoutRef.current);
     }
     setCurrentPage(1); // Reset to page 1 on new explicit search
-    performSearch(searchQuery, 1, yearFilter);
+    performSearch(searchQuery,);
   };
 
 
@@ -146,11 +138,6 @@ const SearchPage = () => {
         <SearchBar
           searchQuery={searchQuery}
           onSearchQueryChange={setSearchQuery}
-          yearFilter={yearFilter}
-          onYearFilterChange={setYearFilter}
-          genreFilter={genreFilter}
-          onGenreFilterChange={setGenreFilter}
-          genres={genres}
           onSubmit={handleSearchSubmit} // Trigger search on form submit (e.g. pressing Enter)
         />
 
