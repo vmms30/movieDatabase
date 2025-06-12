@@ -94,7 +94,7 @@ const SearchPage = () => {
   // Effect for page changes (no debounce needed)
   useEffect(() => {
     if (!initialLoad && searchQuery.trim()) { // Only search if not initialLoad or if query is not empty
-      performSearch(searchQuery, currentPage, yearFilter);
+      performSearch(searchQuery, currentPage);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps 
   }, [currentPage]); // We only want this to run for currentPage changes, performSearch handles others
