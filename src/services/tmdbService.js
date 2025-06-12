@@ -4,11 +4,14 @@ import axios from "axios";
 const API_KEY = "189eae0805817e6d9daf2632ae56dbda"; //process.env.REACT_APP_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 export const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"; // For poster images
+export const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"; // For larger backdrop images
+export const PROFILE_BASE_URL = "https://image.tmdb.org/t/p/w185"; // For cast profile images
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
   params: {
     api_key: API_KEY,
+    language: "en-us",
   },
 });
 
@@ -64,6 +67,21 @@ export const getMovieGenres = async () => {
     return response.data.genres; // Array of {id, name}
   } catch (error) {
     console.error("Error fetching movie genres:", error);
+    throw error;
+  }
+};
+
+// NEW: Get Movie Details, Credits, and Videos in one call
+export const getMovieDetails = async (movieId) => {
+  try {
+    const response = await apiClient.get(`/movie/${movieId}`, {
+      params: {
+        append_to_response: "credits,videos,recommendations", // Fetch credits, videos, and recommendations
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching details for movie ID ${movieId}:`, error);
     throw error;
   }
 };
