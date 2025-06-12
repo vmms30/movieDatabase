@@ -56,7 +56,7 @@ const SearchPage = () => {
     setInitialLoad(false);
 
     try {
-      const data = await searchMovies(query, page, year);
+      const data = await searchMovies(query,);
       setSearchResults(data.results || []);
       setTotalPages(data.total_pages || 0);
       setCurrentPage(data.page || 1);
