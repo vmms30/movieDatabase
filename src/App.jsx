@@ -17,9 +17,9 @@ function App() {
         
           <Navigation /> 
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<SearchPage />} />
             <Route path='/favourites' element={<Favourites/>}/>
-            <Route path="/search" element={<SearchPage />} />
+            <Route path="/trending" element={<Home />} />
             <Route path="/movie/:movieId" element={<MovieDetailsPage />} />
             {/* Add 404 route: <Route path="*" element={<NotFound />} /> */}
           </Routes>

@@ -1,11 +1,11 @@
 // src/pages/SearchPage.js
 import React, { useState, useEffect } from 'react';
-import { Alert } from 'react-bootstrap';
+import { Alert, Container } from 'react-bootstrap';
 import SearchBar from '../components/SearchBar';
 import MovieGrid from '../components/MovieGrid';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PaginationComponent from '../components/PaginationComponent';
-import { searchMovies, getMovieGenres } from '../services/tmdbService';
+import { searchMovies } from '../services/tmdbService';
 
 const SearchPage = () => {
   // Search state
@@ -18,18 +18,6 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
-
-  // Initialize genres on mount
-  useEffect(() => {
-    const initializeGenres = async () => {
-      try {
-        await getMovieGenres();
-      } catch (err) {
-        console.error("Failed to fetch genres:", err);
-      }
-    };
-    initializeGenres();
-  }, []);
 
   // Main search function
   const performSearch = async (query, page = 1) => {
@@ -96,6 +84,19 @@ const SearchPage = () => {
         minWidth: '60vw'
       }}
     >
+      <div className="bg-dark text-light p-5 mb-4 rounded-3" style={{
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://image.tmdb.org/t/p/original/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg')`, // Example backdrop
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}>
+        <Container fluid py={5}>
+          <h1 className="display-5 fw-bold">Welcome to MovieFlix</h1>
+          <p className="col-md-8 fs-4">
+            Discover the latest and greatest movies. Explore popular, trending, and top-rated films.
+          </p>
+          {/* You can add a call to action button here if needed */}
+        </Container>
+      </div>
       <h1 className="mb-4 text-center">Movie Search</h1>
       
       <SearchBar
