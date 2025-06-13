@@ -15,7 +15,7 @@ const SearchBar = ({
   return (
     <Form onSubmit={handleFormSubmit} className="mb-4 p-3 bg-secondary rounded text-white">
       <Row className="gy-2 gx-3 align-items-end">
-        <Col xs={12} md={6}>
+        <Col xs={6} md={6}>
           <Form.Group controlId="searchQuery">
             <Form.Label>Search Movies</Form.Label>
             <Form.Control
@@ -27,8 +27,8 @@ const SearchBar = ({
           </Form.Group>
         </Col>
     
-        <Col xs={12} md="auto" className="d-grid"> {/* d-grid for full width button on small screens */}
-          <Button variant="primary" type="submit" className="w-100">
+        <Col xs={6} md={6} lg={6}> {/* d-grid for full width button on small screens */}
+          <Button variant="primary" type="submit" style={{ width: 'auto' }}>
             Search
           </Button>
         </Col>

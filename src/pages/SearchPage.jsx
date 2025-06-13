@@ -1,6 +1,6 @@
 // src/pages/SearchPage.js
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Container, Alert } from 'react-bootstrap';
+import { Alert, Col } from 'react-bootstrap';
 import SearchBar from '../components/SearchBar';
 import MovieGrid from '../components/MovieGrid';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -124,14 +124,19 @@ const SearchPage = () => {
   const showInitialMessage = !loading && !error && !hasSearched && !searchQuery.trim();
 
   return (
-    <div style={{ 
+    <div 
+    class={"container-sm container-md ontainer-lg container-xl container-xxl"}
+    style={{ 
       backgroundColor: '#141414', 
       color: 'white', 
       minHeight: '100vh', 
       paddingTop: '20px', 
-      paddingBottom: '20px' 
-    }}>
-      <Container>
+      paddingBottom: '20px' ,
+      minWidth:'60vw'
+
+    }}
+    >
+      
         <h1 className="mb-4 text-center">Movie Search</h1>
         
         <SearchBar
@@ -172,7 +177,6 @@ const SearchPage = () => {
             Please enter a search term to find movies.
           </p>
         )}
-      </Container>
     </div>
   );
 };
