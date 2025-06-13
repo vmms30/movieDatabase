@@ -1,4 +1,4 @@
-// src/pages/SearchPage.js
+// src/pages/HomePage.js
 import React, { useState, useEffect } from 'react';
 import { Alert, Container } from 'react-bootstrap';
 import SearchBar from '../components/SearchBar';
@@ -7,7 +7,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import PaginationComponent from '../components/PaginationComponent';
 import { searchMovies } from '../services/tmdbService';
 
-const SearchPage = () => {
+const HomePage = () => {
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
   const [movies, setMovies] = useState([]);
@@ -141,4 +141,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default HomePage;

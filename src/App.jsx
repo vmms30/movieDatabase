@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Container } from 'react-bootstrap';
 import Home from './pages/Home';
 import Favourites from './pages/Favourites';
-import SearchPage from './pages/SearchPage';
+import HomePage from './pages/HomePage';
 import MovieDetailsPage from './pages/MovieDetailsPage';
 import Navigation from './components/Navigation';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -17,7 +17,7 @@ function App() {
         
           <Navigation /> 
           <Routes>
-            <Route path="/" element={<SearchPage />} />
+            <Route path="/" element={<HomePage />} />
             <Route path='/favourites' element={<Favourites/>}/>
             <Route path="/trending" element={<Home />} />
             <Route path="/movie/:movieId" element={<MovieDetailsPage />} />
