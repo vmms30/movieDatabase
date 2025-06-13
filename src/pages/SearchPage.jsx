@@ -8,165 +8,170 @@ import PaginationComponent from '../components/PaginationComponent';
 import { searchMovies, getMovieGenres } from '../services/tmdbService';
 
 const SearchPage = () => {
+  // Search state
   const [searchQuery, setSearchQuery] = useState('');
-
-  const [searchResults, setSearchResults] = useState([]);
-  const [filteredResults, setFilteredResults] = useState([]); // For client-side genre filtering
+  const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  
+  // UI state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [noResults, setNoResults] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(true); // To prevent "No results" on first load
-
+  const [hasSearched, setHasSearched] = useState(false);
+  
+  // Refs
   const debounceTimeoutRef = useRef(null);
+  const abortControllerRef = useRef(null);
 
-  // Fetch genres on component mount
+  // Initialize genres on mount
   useEffect(() => {
-    const fetchGenres = async () => {
+    const initializeGenres = async () => {
       try {
-        const genreData = await getMovieGenres();
+        await getMovieGenres();
       } catch (err) {
-        console.error("Failed to fetch genres", err);
-        // setError("Could not load genres for filtering."); // Optional: show error for genres
+        console.error("Failed to fetch genres:", err);
       }
     };
-    fetchGenres();
+    initializeGenres();
   }, []);
 
-  // API call function
-  const performSearch = useCallback(async (query, page, year) => {
-    if (!query.trim()) {
-      setSearchResults([]);
-      setFilteredResults([]);
+  // Cleanup function for ongoing requests
+  const cleanup = useCallback(() => {
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+  }, []);
+
+  // Main search function
+  const performSearch = useCallback(async (query, page = 1) => {
+    // Clear query - reset state
+    if (!query?.trim()) {
+      setMovies([]);
       setTotalPages(0);
       setCurrentPage(1);
-      setNoResults(false);
-      setInitialLoad(true); // Reset initial load state
+      setError(null);
+      setHasSearched(false);
       return;
     }
 
+    // Cancel any ongoing request
+    cleanup();
+    
+    // Create new abort controller for this request
+    abortControllerRef.current = new AbortController();
+    
     setLoading(true);
     setError(null);
-    setNoResults(false);
-    setInitialLoad(false);
+    setHasSearched(true);
 
     try {
-      const data = await searchMovies(query,);
-      setSearchResults(data.results || []);
+      const data = await searchMovies(query, page, {
+        signal: abortControllerRef.current.signal
+      });
+      
+      setMovies(data.results || []);
       setTotalPages(data.total_pages || 0);
       setCurrentPage(data.page || 1);
-      if (data.results && data.results.length === 0) {
-        setNoResults(true);
-      }
     } catch (err) {
-      setError('Failed to fetch search results. Please try again.');
-      setSearchResults([]);
-      setTotalPages(0);
-      console.error(err);
+      // Don't show error if request was aborted
+      if (err.name !== 'AbortError') {
+        setError('Failed to fetch search results. Please try again.');
+        setMovies([]);
+        setTotalPages(0);
+        console.error('Search error:', err);
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [cleanup]);
 
-  // Debounced search effect for query and year changes
+  // Debounced search effect
   useEffect(() => {
-    if (initialLoad && !searchQuery.trim()) { // Don't trigger search on initial load if query is empty
-        return;
-    }
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current);
     }
+
     debounceTimeoutRef.current = setTimeout(() => {
-      // When query or year changes, reset to page 1
-      setCurrentPage(1); 
-      performSearch(searchQuery, 1,);
-    }, 500); // 500ms debounce
+      performSearch(searchQuery, 1);
+    }, 500);
 
-    return () => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-    };
-  }, [performSearch, initialLoad]);
+    return cleanup;
+  }, [searchQuery, performSearch, cleanup]);
 
-
-  // Effect for page changes (no debounce needed)
-  useEffect(() => {
-    if (!initialLoad && searchQuery.trim()) { // Only search if not initialLoad or if query is not empty
-      performSearch(searchQuery, currentPage);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps 
-  }, [currentPage]); // We only want this to run for currentPage changes, performSearch handles others
-
-  // Client-side filtering for genre
-  useEffect(() => {
-    
-    const clientFiltered = searchResults.filter(movie => 
-      movie.genre_ids 
-    );
-    setFilteredResults(clientFiltered);
-    if (searchResults.length > 0 && clientFiltered.length === 0) {
-        setNoResults(true); // If API returned results but genre filter made it empty
-    } else if (clientFiltered.length > 0) {
-        setNoResults(false);
-    }
-  }, [ searchResults]);
-
-
-  const handlePageChange = (page) => {
+  // Handle page changes
+  const handlePageChange = useCallback((page) => {
     setCurrentPage(page);
-    // The useEffect for currentPage changes will trigger the search
-  };
-  
-  const handleSearchSubmit = () => {
-    // This function can be used if you want an explicit search button press
-    // to trigger the search, rather than just debouncing.
-    // For now, debouncing handles it. If you want button press:
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-    setCurrentPage(1); // Reset to page 1 on new explicit search
-    performSearch(searchQuery,);
-  };
+    performSearch(searchQuery, page);
+  }, [searchQuery, performSearch]);
 
+  // Handle manual search submission
+  const handleSearchSubmit = useCallback(() => {
+    cleanup();
+    performSearch(searchQuery, 1);
+  }, [searchQuery, performSearch, cleanup]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return cleanup;
+  }, [cleanup]);
+
+  // Computed values
+  const showMovies = !loading && !error && movies.length > 0;
+  const showNoResults = !loading && !error && hasSearched && movies.length === 0;
+  const showInitialMessage = !loading && !error && !hasSearched && !searchQuery.trim();
 
   return (
-    <div style={{ backgroundColor: '#141414', color: 'white', minHeight: '100vh', paddingTop: '20px', paddingBottom: '20px' }}>
+    <div style={{ 
+      backgroundColor: '#141414', 
+      color: 'white', 
+      minHeight: '100vh', 
+      paddingTop: '20px', 
+      paddingBottom: '20px' 
+    }}>
       <Container>
         <h1 className="mb-4 text-center">Movie Search</h1>
+        
         <SearchBar
           searchQuery={searchQuery}
           onSearchQueryChange={setSearchQuery}
-          onSubmit={handleSearchSubmit} // Trigger search on form submit (e.g. pressing Enter)
+          onSubmit={handleSearchSubmit}
         />
 
-        {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
-        
-        {loading && <LoadingSpinner />}
-
-        {!loading && !error && noResults && searchQuery.trim() && !initialLoad && (
-          <Alert variant="info" className="mt-3 text-center">
-            No movies found matching your criteria. Try different keywords or filters.
+        {error && (
+          <Alert variant="danger" className="mt-3">
+            {error}
           </Alert>
         )}
         
-        {!loading && !error && !noResults && filteredResults.length > 0 && (
+        {loading && <LoadingSpinner />}
+
+        {showNoResults && (
+          <Alert variant="info" className="mt-3 text-center">
+            No movies found for "{searchQuery}". Try different keywords.
+          </Alert>
+        )}
+        
+        {showMovies && (
           <>
-            <MovieGrid movies={filteredResults} />
-            <PaginationComponent
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+            <MovieGrid movies={movies} />
+            {totalPages > 1 && (
+              <PaginationComponent
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
           </>
         )}
         
-        {/* Helper text for initial state or empty query */}
-        {!loading && !error && filteredResults.length === 0 && !noResults && (initialLoad || !searchQuery.trim()) && (
-          <p className="text-center mt-3">Please enter a search term to find movies.</p>
+        {showInitialMessage && (
+          <p className="text-center mt-3">
+            Please enter a search term to find movies.
+          </p>
         )}
-
       </Container>
     </div>
   );
