@@ -1,21 +1,3 @@
-// import { Container, Row, Col } from 'react-bootstrap';
-
-// function Home() {
-//   return (
-//     <Container>
-//       <Row>
-//         <Col xs={12} md={6} lg={4}>
-//           <!-- Content -->
-//         </Col>
-//         <Col xs={12} md={6} lg={8}>
-//           <!-- Content -->
-//         </Col>
-//       </Row>
-//     </Container>
-//   );
-// }
-// export default Home
-
 // src/pages/Home.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Button, Alert } from 'react-bootstrap';
@@ -43,7 +25,8 @@ const Home = () => {
     setErrorPopular(null);
     try {
       const data = await getPopularMovies(pageToFetch);
-      setPopularMovies(prevMovies => pageToFetch === 1 ? data.results : [...prevMovies, ...data.results]);
+      // setPopularMovies(prevMovies => pageToFetch === 1 ? data.results : [...prevMovies, ...data.results]);
+       setPopularMovies(data.results);
       setHasMorePopular(data.page < data.total_pages);
       if (pageToFetch === 1) setPopularPage(1); // Reset page if fetching first page
     } catch (err) {
