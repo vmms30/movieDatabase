@@ -1,7 +1,8 @@
 // src/services/tmdbService.js
 import axios from "axios";
 
-const API_KEY = "189eae0805817e6d9daf2632ae56dbda"; //process.env.REACT_APP_TMDB_API_KEY;
+const API_KEY = import.meta.env.VITE_API_KEY;
+const ACCOUNT_ID = import.meta.env.VITE_ACCOUNT_ID;
 const BASE_URL = "https://api.themoviedb.org/3";
 export const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"; // For poster images
 export const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w1280"; // For larger backdrop images
@@ -84,4 +85,270 @@ export const getMovieDetails = async (movieId) => {
     console.error(`Error fetching details for movie ID ${movieId}:`, error);
     throw error;
   }
+};
+
+// TMDB Account API Functions
+
+// Get account details
+export const getAccountDetails = async (sessionId) => {
+  try {
+    const response = await apiClient.get("/account", {
+      params: {
+        session_id: sessionId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching account details:", error);
+    throw error;
+  }
+};
+
+// Get favorite movies
+export const getFavoriteMovies = async (accountId, sessionId, page = 1) => {
+  try {
+    const response = await apiClient.get(
+      `/account/${accountId}/favorite/movies`,
+      {
+        params: {
+          session_id: sessionId,
+          page,
+          sort_by: "created_at.asc",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching favorite movies for account ${accountId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Get favorite TV shows
+export const getFavoriteTv = async (accountId, sessionId, page = 1) => {
+  try {
+    const response = await apiClient.get(`/account/${accountId}/favorite/tv`, {
+      params: {
+        session_id: sessionId,
+        page,
+        sort_by: "created_at.asc",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching favorite TV shows for account ${accountId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Add to favorites (movies or TV shows)
+export const addToFavorites = async (
+  accountId,
+  sessionId,
+  mediaType,
+  mediaId,
+  favorite = true
+) => {
+  try {
+    const response = await apiClient.post(
+      `/account/${accountId}/favorite`,
+      {
+        media_type: mediaType, // 'movie' or 'tv'
+        media_id: mediaId,
+        favorite,
+      },
+      {
+        params: {
+          session_id: sessionId,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error ${favorite ? "adding to" : "removing from"} favorites:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Get watchlist movies
+export const getWatchlistMovies = async (accountId, sessionId, page = 1) => {
+  try {
+    const response = await apiClient.get(
+      `/account/${accountId}/watchlist/movies`,
+      {
+        params: {
+          session_id: sessionId,
+          page,
+          sort_by: "created_at.asc",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching watchlist movies for account ${accountId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Get watchlist TV shows
+export const getWatchlistTv = async (accountId, sessionId, page = 1) => {
+  try {
+    const response = await apiClient.get(`/account/${accountId}/watchlist/tv`, {
+      params: {
+        session_id: sessionId,
+        page,
+        sort_by: "created_at.asc",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching watchlist TV shows for account ${accountId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Add to watchlist (movies or TV shows)
+export const addToWatchlist = async (
+  accountId,
+  sessionId,
+  mediaType,
+  mediaId,
+  watchlist = true
+) => {
+  try {
+    const response = await apiClient.post(
+      `/account/${accountId}/watchlist`,
+      {
+        media_type: mediaType, // 'movie' or 'tv'
+        media_id: mediaId,
+        watchlist,
+      },
+      {
+        params: {
+          session_id: sessionId,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error ${watchlist ? "adding to" : "removing from"} watchlist:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Get rated movies
+export const getRatedMovies = async (accountId, sessionId, page = 1) => {
+  try {
+    const response = await apiClient.get(`/account/${accountId}/rated/movies`, {
+      params: {
+        session_id: sessionId,
+        page,
+        sort_by: "created_at.asc",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching rated movies for account ${accountId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Get rated TV shows
+export const getRatedTv = async (accountId, sessionId, page = 1) => {
+  try {
+    const response = await apiClient.get(`/account/${accountId}/rated/tv`, {
+      params: {
+        session_id: sessionId,
+        page,
+        sort_by: "created_at.asc",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching rated TV shows for account ${accountId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Get rated TV episodes
+export const getRatedTvEpisodes = async (accountId, sessionId, page = 1) => {
+  try {
+    const response = await apiClient.get(
+      `/account/${accountId}/rated/tv/episodes`,
+      {
+        params: {
+          session_id: sessionId,
+          page,
+          sort_by: "created_at.asc",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching rated TV episodes for account ${accountId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Get user lists
+export const getAccountLists = async (accountId, sessionId, page = 1) => {
+  try {
+    const response = await apiClient.get(`/account/${accountId}/lists`, {
+      params: {
+        session_id: sessionId,
+        page,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching lists for account ${accountId}:`, error);
+    throw error;
+  }
+};
+
+// Helper function to remove from favorites
+export const removeFromFavorites = async (
+  accountId,
+  sessionId,
+  mediaType,
+  mediaId
+) => {
+  return addToFavorites(accountId, sessionId, mediaType, mediaId, false);
+};
+
+// Helper function to remove from watchlist
+export const removeFromWatchlist = async (
+  accountId,
+  sessionId,
+  mediaType,
+  mediaId
+) => {
+  return addToWatchlist(accountId, sessionId, mediaType, mediaId, false);
 };

@@ -20,6 +20,9 @@ const MovieCard = ({ movie, isFavorite, onToggleFavorite }) => {
     : 'https://via.placeholder.com/500x750?text=No+Image';
 
   const handleFavoriteClick = (e) => {
+    console.log('e type : ', e
+      
+    )
     e.preventDefault(); // Important: Prevent the Link navigation when only the button is clicked
     e.stopPropagation(); // Stop event from bubbling up to the Link parent
     if (onToggleFavorite) {
