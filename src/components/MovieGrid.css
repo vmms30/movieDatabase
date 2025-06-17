@@ -1,0 +1,27 @@
+.movie-grid-container {
+  padding: 0 1rem;
+}
+
+.movie-grid-row {
+  margin: 0 -0.5rem;
+}
+
+.movie-grid-row > .col,
+.movie-grid-row > [class*="col-"] {
+  padding: 0 0.5rem;
+}
+
+@media (max-width: 576px) {
+  .movie-grid-container {
+    padding: 0 0.5rem;
+  }
+  
+  .movie-grid-row {
+    margin: 0 -0.25rem;
+  }
+  
+  .movie-grid-row > .col,
+  .movie-grid-row > [class*="col-"] {
+    padding: 0 0.25rem;
+  }
+}

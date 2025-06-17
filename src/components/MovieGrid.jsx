@@ -1,59 +1,152 @@
-// src/components/MovieGrid.jsx
-import React, { useState, useEffect, useMemo } from "react"; // Added useMemo
-import { Row, Col } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Spinner, Alert, Button } from "react-bootstrap";
 import MovieCard from "./MovieCard";
-import { getFavoritesFromStorage } from "../utils/localStorage"; // You'll use this directly
+import {
+  addFavoriteToStorage,
+  removeFavoriteFromStorage,
+  getFavoritesFromStorage,
+} from "../utils/localStorage";
+import "./MovieGrid.css";
 
-// MovieGrid now only needs 'movies' and 'toggleFavorite' from its parent.
-// It will determine 'isFavorite' itself.
-const MovieGrid = ({ movies, toggleFavorite }) => {
-  // We don't need to store the full favorite movies objects in MovieGrid's state,
-  // just the IDs for quick lookup, and we can get this fresh on each render
-  // or memoize it if performance becomes an issue with very frequent re-renders.
+const MovieGrid = ({
+  movies = [],
+  loading = false,
+  error = null,
+  title = "Movies",
+  showLoadMore = false,
+  onLoadMore = null,
+  loadingMore = false,
+}) => {
+  const [favorites, setFavorites] = useState([]);
 
-  // useMemo will re-calculate favoriteIdsSet only when 'movies' changes.
-  // This is an optimization. If 'movies' doesn't change often, or if getFavoritesFromStorage
-  // is very fast, you might not even need useMemo and could calculate it directly in the map.
-  // However, for potentially frequent re-renders of MovieGrid, memoizing is good.
-  const favoriteIdsSet = useMemo(() => {
-    // console.log("MovieGrid: Recalculating favoriteIdsSet");
-    const favoriteMoviesFromStorage = getFavoritesFromStorage();
-    return new Set(favoriteMoviesFromStorage.map((fav) => fav.id));
-  }, [movies]); // Recompute when the list of 'movies' to display changes.
-  // This dependency is a bit broad. If localStorage favorites change
-  // independently, this set won't update until 'movies' prop changes.
-  // This highlights why central state management (like in App.jsx) is usually better.
+  // Load favorites from localStorage on component mount
+  useEffect(() => {
+    const storedFavorites = getFavoritesFromStorage();
+    setFavorites(storedFavorites);
+  }, []);
+
+  // Handle toggling favorite status
+  const handleToggleFavorite = (movie) => {
+    const isFavorite = favorites.some((fav) => fav.id === movie.id);
+
+    if (isFavorite) {
+      // Remove from favorites
+      removeFavoriteFromStorage(movie.id);
+      setFavorites((prev) => prev.filter((fav) => fav.id !== movie.id));
+    } else {
+      // Add to favorites
+      addFavoriteToStorage(movie);
+      setFavorites((prev) => [...prev, movie]);
+    }
+  };
+
+  // Check if a movie is in favorites
+  const isMovieFavorite = (movieId) => {
+    return favorites.some((fav) => fav.id === movieId);
+  };
+
+  if (loading && movies.length === 0) {
+    return (
+      <Container className="text-center py-5">
+        <Spinner animation="border" role="status" variant="light">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+        <p className="mt-3">Loading movies...</p>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="py-5">
+        <Alert variant="danger">
+          <Alert.Heading>Error Loading Movies</Alert.Heading>
+          <p>{error}</p>
+        </Alert>
+      </Container>
+    );
+  }
 
   if (!movies || movies.length === 0) {
-    return <p className="text-light text-center mt-4">No movies to display.</p>;
+    return (
+      <Container className="py-5">
+        <Alert variant="info">
+          <Alert.Heading>No Movies Found</Alert.Heading>
+          <p>No movies match your current search or filter criteria.</p>
+        </Alert>
+      </Container>
+    );
   }
 
   return (
-    <Row xs={1} sm={2} md={3} lg={4} xl={5} className="g-4">
-      {" "}
-      {/* Adjusted lg breakpoint */}
-      {movies.map((movie) => {
-        if (!movie || typeof movie.id === "undefined") {
-          return null;
-        }
+    <Container fluid className="movie-grid-container">
+      {title && (
+        <Row className="mb-4">
+          <Col>
+            <h2 className="text-white">{title}</h2>
+          </Col>
+        </Row>
+      )}
 
-        // Determine if the current movie is a favorite by checking our memoized set of IDs
-        const isCurrentlyFavorite = favoriteIdsSet.has(movie.id);
-        // console.log(`MovieGrid: Movie ID ${movie.id} (${movie.title}), isFavorite: ${isCurrentlyFavorite}`);
-
-        return (
-          <Col key={movie.id} className="d-flex align-items-stretch">
+      <Row className="movie-grid-row">
+        {movies.map((movie) => (
+          <Col
+            key={movie.id}
+            xs={12}
+            sm={6}
+            md={4}
+            lg={3}
+            xl={3}
+            className="mb-4"
+          >
             <MovieCard
               movie={movie}
-              isFavorite={isCurrentlyFavorite} // Directly determined 'isFavorite' status
-              onToggleFavorite={toggleFavorite} // This prop is still ESSENTIAL
-              // It must come from App.jsx to update
-              // localStorage and App's central state.
+              isFavorite={isMovieFavorite(movie.id)}
+              onToggleFavorite={handleToggleFavorite}
             />
           </Col>
-        );
-      })}
-    </Row>
+        ))}
+      </Row>
+
+      {/* Load More Button */}
+      {showLoadMore && onLoadMore && (
+        <Row className="mt-4 mb-4">
+          <Col className="text-center">
+            <Button
+              variant="outline-light"
+              onClick={onLoadMore}
+              disabled={loadingMore}
+              size="lg"
+            >
+              {loadingMore ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Loading More...
+                </>
+              ) : (
+                "Load More Movies"
+              )}
+            </Button>
+          </Col>
+        </Row>
+      )}
+
+      {/* Loading indicator for additional content */}
+      {loading && movies.length > 0 && (
+        <Row className="mt-4">
+          <Col className="text-center">
+            <Spinner animation="border" variant="light" />
+          </Col>
+        </Row>
+      )}
+    </Container>
   );
 };
 
