@@ -108,7 +108,6 @@ const MovieGrid = ({
         ))}
       </Row>
 
-      {/* Load More Button */}
       {showLoadMore && onLoadMore && (
         <Row className="mt-4 mb-4">
           <Col className="text-center">
@@ -138,7 +137,6 @@ const MovieGrid = ({
         </Row>
       )}
 
-      {/* Loading indicator for additional content */}
       {loading && movies.length > 0 && (
         <Row className="mt-4">
           <Col className="text-center">
