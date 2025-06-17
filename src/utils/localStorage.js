@@ -104,3 +104,17 @@ export const isFavoriteInStorage = (movieId) => {
   const favorites = getFavoritesFromStorage();
   return favorites.some((favMovie) => favMovie.id === movieId);
 };
+
+// Clear all favorites from localStorage
+export const clearFavoritesFromStorage = () => {
+  try {
+    localStorage.removeItem(FAVORITES_KEY);
+    // console.log("All favorites cleared from storage.");
+    return []; // Return empty array to indicate cleared state
+  } catch (error) {
+    console.error("Error clearing favorites from localStorage:", error);
+    // If removeItem fails for some reason, still return empty array
+    // but the actual storage might not be cleared
+    return [];
+  }
+};
