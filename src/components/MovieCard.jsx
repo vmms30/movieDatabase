@@ -34,6 +34,7 @@ const MovieCard = ({ movie, isFavorite = false, onToggleFavorite }) => {
           variant="top"
           src={posterUrl}
           alt={movie.title || "Movie poster"}
+          loading="lazy"
         />
         <Card.Body className="d-flex flex-column flex-grow-1">
           <Card.Title className="movie-card-title" title={movie.title}>

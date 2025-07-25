@@ -55,8 +55,12 @@ const MovieDetailsPage = () => {
       setRecommendations(data.recommendations?.results.slice(0, 10) || []); // Show top 10 recommendations
 
     } catch (err) {
-      console.error(`Error fetching movie details for ${movieId}:`, err);
-      setError('Failed to load movie details. Please try again later or check the movie ID.');
+      if (err.response && err.response.status === 404) {
+        navigate('/not-found');
+      } else {
+        console.error(`Error fetching movie details for ${movieId}:`, err);
+        setError('Failed to load movie details. Please try again later or check the movie ID.');
+      }
     } finally {
       setLoading(false);
     }
@@ -99,7 +103,7 @@ const MovieDetailsPage = () => {
         <Row>
           {/* Left Column: Poster & Basic Info */}
           <Col md={4} className="text-center text-md-start mb-4 mb-md-0">
-            <Image src={posterUrl} alt={movie.title} fluid className="movie-poster-details mb-3" />
+            <Image src={posterUrl} alt={movie.title} fluid className="movie-poster-details mb-3" loading="lazy" />
             <Button variant="outline-light" onClick={() => navigate(-1)} className="w-100 mb-2">
               « Back to Previous
             </Button>
@@ -154,6 +158,7 @@ const MovieDetailsPage = () => {
                     src={member.profile_path ? `${PROFILE_BASE_URL}${member.profile_path}` : 'https://via.placeholder.com/100x150?text=No+Image'} 
                     alt={member.name} 
                     rounded 
+                    loading="lazy"
                   />
                   <p className="fw-bold">{member.name}</p>
                   <p className="character-name">{member.character}</p>
