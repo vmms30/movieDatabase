@@ -1,11 +1,12 @@
-// src/components/SearchBar.js
 import React from 'react';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import { Form, Row, Col, Button, ListGroup } from 'react-bootstrap';
 
 const SearchBar = ({
   searchQuery,
   onSearchQueryChange,
   onSubmit,
+  suggestions = [],
+  onSuggestionClick,
 }) => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -13,7 +14,7 @@ const SearchBar = ({
   };
 
   return (
-    <Form onSubmit={handleFormSubmit} className="mb-4 p-3 bg-secondary rounded text-white">
+    <Form onSubmit={handleFormSubmit} className="mb-4 p-3 bg-secondary rounded text-white position-relative">
       <Row className="gy-2 gx-3 align-items-end">
         <Col xs={6} md={6}>
           <Form.Group controlId="searchQuery">
@@ -23,11 +24,25 @@ const SearchBar = ({
               placeholder="e.g., Inception, Star Wars..."
               value={searchQuery}
               onChange={(e) => onSearchQueryChange(e.target.value)}
+              autoComplete="off"
             />
           </Form.Group>
+          {suggestions.length > 0 && (
+            <ListGroup className="position-absolute" style={{ zIndex: 1000 }}>
+              {suggestions.map((movie) => (
+                <ListGroup.Item
+                  key={movie.id}
+                  action
+                  onClick={() => onSuggestionClick(movie.title)}
+                >
+                  {movie.title}
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
         </Col>
     
-        <Col xs={6} md={6} lg={6}> {/* d-grid for full width button on small screens */}
+        <Col xs={6} md={6} lg={6}>
           <Button variant="primary" type="submit" style={{ width: 'auto' }}>
             Search
           </Button>

@@ -76,7 +76,7 @@ export const getMovieDetails = async (movieId) => {
   try {
     const response = await apiClient.get(`/movie/${movieId}`, {
       params: {
-        append_to_response: "credits,videos,recommendations", // Fetch credits, videos, and recommendations
+        append_to_response: "credits,videos,recommendations,reviews", // Fetch credits, videos, and recommendations
       },
     });
     return response.data;
@@ -84,4 +84,41 @@ export const getMovieDetails = async (movieId) => {
     console.error(`Error fetching details for movie ID ${movieId}:`, error);
     throw error;
   }
+};
+
+
+// NEW: Get movies by genre
+export const getMoviesByGenre = async (genreId, page = 1) => {
+  try {
+    const response = await apiClient.get('/discover/movie', {
+      params: {
+        with_genres: genreId,
+        page: page,
+        sort_by: 'popularity.desc' // Sort by popularity
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching movies for genre ID ${genreId}:`, error);
+    throw error;
+  }
+};
+
+export const getPopularTVShows = async (page = 1) => {
+  const response = await apiClient.get('/tv/popular', { params: { page } });
+  return response.data;
+};
+
+export const getTVShowDetails = async (seriesId) => {
+  const response = await apiClient.get(`/tv/${seriesId}`, {
+    params: { append_to_response: 'credits,videos,recommendations' },
+  });
+  return response.data;
+};
+
+export const getPersonDetails = async (personId) => {
+  const response = await apiClient.get(`/person/${personId}`, {
+    params: { append_to_response: 'combined_credits' },
+  });
+  return response.data;
 };

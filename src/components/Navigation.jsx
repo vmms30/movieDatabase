@@ -15,6 +15,9 @@ const Navigation = () => {
             <Nav.Link as={Link} to="/">
               Home
             </Nav.Link>
+            <Nav.Link as={Link} to="/tv">
+              TV Shows
+            </Nav.Link>
             <Nav.Link as={Link} to="/trending">
               Trending
             </Nav.Link>
