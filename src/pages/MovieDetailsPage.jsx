@@ -1,6 +1,6 @@
 // src/pages/MovieDetailsPage.js
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Container, Row, Col, Image, Badge, Button, Alert, Card } from 'react-bootstrap';
 import {
   getMovieDetails,
@@ -11,6 +11,7 @@ import {
 import LoadingSpinner from '../components/LoadingSpinner';
 import MovieGrid from '../components/MovieGrid'; // Re-use for similar movies
 import BreadcrumbsComponent from '../components/BreadcrumbsComponent';
+import Reviews from '../components/Reviews';
 import './MovieDetailsPage.css'; // Custom styles
 
 const MovieDetailsPage = () => {
@@ -22,6 +23,7 @@ const MovieDetailsPage = () => {
   const [crew, setCrew] = useState([]);
   const [trailer, setTrailer] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -53,6 +55,7 @@ const MovieDetailsPage = () => {
       
 
       setRecommendations(data.recommendations?.results.slice(0, 10) || []); // Show top 10 recommendations
+      setReviews(data.reviews?.results || []);
 
     } catch (err) {
       if (err.response && err.response.status === 404) {
@@ -154,12 +157,14 @@ const MovieDetailsPage = () => {
             <Row xs={2} sm={3} md={4} lg={5} className="g-3">
               {cast.map(member => (
                 <Col key={member.cast_id || member.id} className="cast-member">
-                  <Image 
-                    src={member.profile_path ? `${PROFILE_BASE_URL}${member.profile_path}` : 'https://via.placeholder.com/100x150?text=No+Image'} 
-                    alt={member.name} 
-                    rounded 
-                    loading="lazy"
-                  />
+                  <Link to={`/person/${member.id}`}>
+                    <Image 
+                      src={member.profile_path ? `${PROFILE_BASE_URL}${member.profile_path}` : 'https://via.placeholder.com/100x150?text=No+Image'} 
+                      alt={member.name} 
+                      rounded 
+                      loading="lazy"
+                    />
+                  </Link>
                   <p className="fw-bold">{member.name}</p>
                   <p className="character-name">{member.character}</p>
                 </Col>
@@ -180,6 +185,14 @@ const MovieDetailsPage = () => {
                 allowFullScreen
               ></iframe>
             </div>
+          </section>
+        )}
+
+        {/* Reviews Section */}
+        {reviews.length > 0 && (
+          <section>
+            <h4 className="section-title">Reviews</h4>
+            <Reviews reviews={reviews} />
           </section>
         )}
 
