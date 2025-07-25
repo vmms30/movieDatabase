@@ -6,6 +6,7 @@ import { IMAGE_BASE_URL } from "../services/tmdbService";
 import "./MovieCard.css";
 
 const MovieCard = ({ movie, isFavorite = false, onToggleFavorite }) => {
+  console.log("MovieCard data on movie: ", movie);
   if (!movie || typeof movie.id === "undefined") {
     return null;
   }
@@ -37,8 +38,11 @@ const MovieCard = ({ movie, isFavorite = false, onToggleFavorite }) => {
           loading="lazy"
         />
         <Card.Body className="d-flex flex-column flex-grow-1">
-          <Card.Title className="movie-card-title" title={movie.title}>
-            {movie.title || "Untitled Movie"}
+          <Card.Title
+            className="movie-card-title"
+            title={movie?.title || movie?.original_name}
+          >
+            {movie?.title || movie?.original_name || "Untitled Movie"}
           </Card.Title>
           <div className="mt-auto">
             {" "}
