@@ -6,7 +6,6 @@ import { IMAGE_BASE_URL } from "../services/tmdbService";
 import "./MovieCard.css";
 
 const MovieCard = ({ movie, isFavorite = false, onToggleFavorite }) => {
-  console.log("MovieCard data on movie: ", movie);
   if (!movie || typeof movie.id === "undefined") {
     return null;
   }
