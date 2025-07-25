@@ -85,3 +85,21 @@ export const getMovieDetails = async (movieId) => {
     throw error;
   }
 };
+
+
+// NEW: Get movies by genre
+export const getMoviesByGenre = async (genreId, page = 1) => {
+  try {
+    const response = await apiClient.get('/discover/movie', {
+      params: {
+        with_genres: genreId,
+        page: page,
+        sort_by: 'popularity.desc' // Sort by popularity
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching movies for genre ID ${genreId}:`, error);
+    throw error;
+  }
+};
