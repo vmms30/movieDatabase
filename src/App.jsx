@@ -10,6 +10,7 @@ import Navigation from "./components/Navigation";
 import TVShowsPage from "./pages/TVShowsPage";
 import TVShowDetailsPage from "./pages/TVShowDetailsPage";
 import PersonDetailsPage from "./pages/PersonDetailsPage";
+import HowToUsePage from "./pages/HowToUsePage";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/favourites" element={<FavouritesPage />} />
             <Route path="/trending" element={<Home />} />
             <Route path="/movie/:movieId" element={<MovieDetailsPage />} />
+            <Route path="/movieDatabase" element={<HowToUsePage />} />
             <Route path="/not-found" element={<NotFoundPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

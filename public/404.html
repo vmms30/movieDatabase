@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // Get the current path, excluding the base path if present
+    var path = window.location.pathname;
+    var basePath = "/movieDatabase"; // Your GitHub Pages repository name
+    if (path.startsWith(basePath)) {
+      path = path.substring(basePath.length);
+    }
+
+    // Redirect to index.html, preserving the path for client-side routing
+    window.location.replace(basePath + "/index.html" + window.location.search + window.location.hash + path);
+  </script>
+</head>
+<body>
+  <p>If you are not redirected automatically, follow this <a href="/movieDatabase/index.html">link</a>.</p>
+</body>
+</html>
