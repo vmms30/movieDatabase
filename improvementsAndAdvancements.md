@@ -65,3 +65,69 @@ These features are designed to make the website more fun, interactive, and engag
         *   "Because you liked [Movie A], you might also like [Movie B]." (using TMDB recommendations).
         *   "New releases from your favorite actors."
         *   A "Continue Watching" section if integrated with a streaming service API (a more advanced feature).
+
+---
+
+## 📋 Implementation Checklist
+
+Here is a detailed breakdown of the steps required to implement the suggested improvements and features.
+
+### Technical Improvements
+
+**1. API Key Management**
+- [ ] Create a `.env` file in the project root.
+- [ ] Add `VITE_TMDB_API_KEY=your_api_key` to the `.env` file.
+- [ ] Add `.env` to the `.gitignore` file to ensure it's not committed.
+- [ ] Update `src/services/tmdbService.js` to use `import.meta.env.VITE_TMDB_API_KEY` instead of the hardcoded key.
+
+**2. State Management (using Zustand)**
+- [ ] Install Zustand: `npm install zustand`.
+- [ ] Create a new directory: `src/store`.
+- [ ] Create a favorites store: `src/store/favoritesStore.js`.
+- [ ] Implement the store to handle adding, removing, and loading favorite movies from `localStorage`.
+- [ ] Refactor `MovieCard.jsx` to use the `useFavoritesStore` hook to check if a movie is a favorite.
+- [ ] Refactor `FavoritesPage.jsx` to get the list of favorite movies from the store.
+
+**3. Component & Code Structure**
+- [ ] Standardize page names: Delete `FavouritesPage.jsx` and rename `FavoritesPage.jsx` to `FavouritesPage.jsx` (or vice-versa) to ensure consistency.
+- [ ] Update the corresponding route in `src/App.jsx`.
+- [ ] Create a new directory for API services: `src/api`.
+- [ ] Move `src/services/tmdbService.js` to `src/api/tmdb.js`.
+- [ ] Update all component imports to reflect the new path.
+- [ ] **(Advanced)**: Split `src/api/tmdb.js` into smaller, more focused files like `movies.js`, `tv.js`, and `search.js` within the `src/api` directory.
+
+**4. Error Handling & User Feedback**
+- [ ] Install a toast notification library: `npm install react-hot-toast`.
+- [ ] Add the `<Toaster />` component to the root of your application in `App.jsx`.
+- [ ] In `tmdbService.js`, wrap API calls in `try...catch` blocks. If an error occurs, log it and re-throw it.
+- [ ] In the UI components (e.g., `HomePage.jsx`), wrap the `fetch` calls in a `try...catch` block and use `toast.error("Failed to fetch movies.")` in the `catch` block.
+
+**5. Lazy Loading Routes**
+- [ ] In `src/App.jsx`, import `lazy` and `Suspense` from React.
+- [ ] Convert page-level imports to use `lazy()`. Example: `const HomePage = lazy(() => import('./pages/HomePage'));`.
+- [ ] Wrap the `<Routes>` component in a `<Suspense fallback={<LoadingSpinner />}>` component to show a loader while pages are loading.
+
+### Exciting Features
+
+**1. "Movie Match" Quiz**
+- [ ] Create a new page component: `src/pages/MovieQuizPage.jsx`.
+- [ ] Add a new route `/quiz` in `src/App.jsx`.
+- [ ] Design the UI for the quiz with a series of questions (e.g., "Pick a genre," "Choose a decade").
+- [ ] Manage the user's answers in the component's state.
+- [ ] Create a new function in the TMDB service that uses the `/discover/movie` endpoint, passing genres, keywords, or release years based on quiz answers.
+- [ ] Create a `QuizResultsPage.jsx` to display the recommended movies.
+
+**2. Gamified "Watchlist Challenge"**
+- [ ] Update the data structure for favorites in `localStorage` or the state management store to support multiple named lists (challenges).
+- [ ] Create a new page `src/pages/ChallengesPage.jsx` to display and manage challenges.
+- [ ] Implement UI for creating a new challenge (e.g., a form to enter a name like "80s Sci-Fi Classics").
+- [ ] Add a "Mark as Watched" checkbox or button next to each movie in a challenge list.
+- [ ] Design and create a set of SVG badge components (e.g., `Badge80sFan`, `BadgeHorrorBuff`).
+- [ ] Implement logic to check if all movies in a challenge are "watched" and award the corresponding badge.
+
+**3. Advanced & Themed Discovery**
+- [ ] Create a new component `src/components/ThemedCollections.jsx` for the home page.
+- [ ] Design UI buttons for different moods (e.g., "Need a Laugh," "Want a Good Cry").
+- [ ] For each button, create a pre-defined set of parameters (e.g., genre IDs, keywords) to use with the `/discover/movie` endpoint.
+- [ ] Create a generic `ListPage.jsx` that can receive a title and API call function as props to display the themed results.
+- [ ] Clicking a themed button should navigate to this list page, passing the appropriate parameters.
