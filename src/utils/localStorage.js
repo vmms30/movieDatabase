@@ -8,7 +8,7 @@ export const getFavoritesFromStorage = () => {
     const favoritesJson = localStorage.getItem(FAVORITES_KEY);
     // If favoritesJson is null (key doesn't exist) or undefined, parse will fail or return null.
     // JSON.parse(null) is null. So, we return [] if it's falsy.
-    console.log("favoritesJson: ", favoritesJson);
+    // console.log("favoritesJson: ", favoritesJson);
     return favoritesJson ? JSON.parse(favoritesJson) : [];
   } catch (error) {
     console.error("Error parsing favorites from localStorage:", error);
