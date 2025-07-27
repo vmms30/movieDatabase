@@ -108,7 +108,7 @@ const TVShowDetailsPage = () => {
             <div className="row">
               {recommendations.results.slice(0, 6).map(rec => (
                 <div key={rec.id} className="col-md-2 mb-4">
-                  <MovieCard movie={rec} isTV={true} />
+                  <MovieCard movie={rec} mediaType="tv" />
                 </div>
               ))}
             </div>

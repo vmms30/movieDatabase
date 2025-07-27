@@ -5,7 +5,12 @@ import { Heart, HeartFill } from "react-bootstrap-icons";
 import { IMAGE_BASE_URL } from "../services/tmdbService";
 import "./MovieCard.css";
 
-const MovieCard = ({ movie, isFavorite = false, onToggleFavorite }) => {
+const MovieCard = ({
+  movie,
+  isFavorite = false,
+  onToggleFavorite,
+  mediaType = "movie", // Default to 'movie'
+}) => {
   if (!movie || typeof movie.id === "undefined") {
     return null;
   }
@@ -23,9 +28,12 @@ const MovieCard = ({ movie, isFavorite = false, onToggleFavorite }) => {
     }
   };
 
+  // Determine the link path based on mediaType
+  const linkPath = mediaType === "tv" ? `/tv/${movie.id}` : `/movie/${movie.id}`;
+
   return (
     <Link
-      to={`/movie/${movie.id}`}
+      to={linkPath}
       style={{ textDecoration: "none", display: "flex", width: "100%" }}
       className="movie-card-link-wrapper"
     >

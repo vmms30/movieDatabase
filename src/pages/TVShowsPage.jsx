@@ -41,7 +41,7 @@ const TVShowsPage = () => {
           <div className="row">
             {tvShows.map((tvShow) => (
               <div key={tvShow.id} className="col-md-3 mb-4">
-                <MovieCard movie={tvShow} isTV={true} />
+                <MovieCard movie={tvShow} mediaType="tv" />
               </div>
             ))}
           </div>
