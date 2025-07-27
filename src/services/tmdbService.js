@@ -122,3 +122,10 @@ export const getPersonDetails = async (personId) => {
   });
   return response.data;
 };
+
+export const searchTVShows = async (query, page = 1) => {
+  const response = await apiClient.get('/search/tv', {
+    params: { query, page },
+  });
+  return response.data;
+};
