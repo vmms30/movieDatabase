@@ -67,7 +67,7 @@ const MovieDetailsPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [movieId]);
+  }, [movieId, navigate]);
 
   useEffect(() => {
     fetchDetails();

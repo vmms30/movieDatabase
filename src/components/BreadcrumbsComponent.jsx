@@ -1,10 +1,9 @@
 
 import React from 'react';
 import { Breadcrumb } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom'; // Import Link
 
 const BreadcrumbsComponent = ({ movieTitle }) => {
-  const navigate = useNavigate(); // Keep for the "Go Back" example if you were to add it
 
   return (
     <Breadcrumb listProps={{ className: "bg-dark p-2 rounded" }}>

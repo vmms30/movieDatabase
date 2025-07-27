@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, Container, Button } from 'react-bootstrap';
 import SearchBar from '../components/SearchBar';
 import MovieGrid from '../components/MovieGrid';

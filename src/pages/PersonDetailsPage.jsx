@@ -65,7 +65,7 @@ const PersonDetailsPage = () => {
         <div className="row">
           {knownFor.map(item => (
             <div key={item.id} className="col-md-2 mb-4">
-              <MovieCard movie={item} isTV={item.media_type === 'tv'} />
+              <MovieCard movie={item} mediaType={item.media_type} />
             </div>
           ))}
         </div>
