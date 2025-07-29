@@ -1,0 +1,30 @@
+name: Check for .md files in PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  prevent-md-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetches all history for git diff
+
+      - name: Check for .md files
+        run: |
+          # Diff between the PR's source branch and the target branch (main)
+          files=$(git diff --name-only origin/${{ github.base_ref }}...origin/${{ github.head_ref }})
+          
+          if echo "$files" | grep -q '\.md$'; then
+            echo "Error: This PR contains .md files, which cannot be merged into the main branch."
+            echo "The following .md files were found:"
+            echo "$files" | grep '\.md$'
+            exit 1
+          else
+            echo "No .md files found. Check passed."
+            exit 0
+          fi
