@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Alert, Container, Button } from 'react-bootstrap';
-import SearchBar from '../components/SearchBar';
-import MovieGrid from '../components/MovieGrid';
-import LoadingSpinner from '../components/LoadingSpinner';
-import PaginationComponent from '../components/PaginationComponent';
-import { searchMovies, getMovieGenres, getMoviesByGenre } from '../services/tmdbService';
+import React, { useState, useEffect } from "react";
+import { Alert, Container, Button } from "react-bootstrap";
+import SearchBar from "../components/SearchBar";
+import MovieGrid from "../components/MovieGrid";
+import LoadingSpinner from "../components/LoadingSpinner";
+import PaginationComponent from "../components/PaginationComponent";
+import {
+  searchMovies,
+  getMovieGenres,
+  getMoviesByGenre,
+} from "../services/tmdbService";
 
 const HomePage = () => {
   // Search state
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
-  
+
   // UI state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -36,7 +40,7 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    if (searchQuery.trim() === '') {
+    if (searchQuery.trim() === "") {
       setSuggestions([]);
       return;
     }
@@ -46,7 +50,7 @@ const HomePage = () => {
         const data = await searchMovies(searchQuery, 1);
         setSuggestions(data.results.slice(0, 5));
       } catch (err) {
-        console.error('Failed to fetch suggestions:', err);
+        console.error("Failed to fetch suggestions:", err);
       }
     };
 
@@ -67,7 +71,7 @@ const HomePage = () => {
       setHasSearched(false);
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     setHasSearched(true);
@@ -76,15 +80,15 @@ const HomePage = () => {
 
     try {
       const data = await searchMovies(query, page);
-      
+
       setMovies(data.results || []);
       setTotalPages(data.total_pages || 0);
       setCurrentPage(data.page || 1);
     } catch (err) {
-      setError('Failed to fetch search results. Please try again.');
+      setError("Failed to fetch search results. Please try again.");
       setMovies([]);
       setTotalPages(0);
-      console.error('Search error:', err);
+      console.error("Search error:", err);
     } finally {
       setLoading(false);
     }
@@ -94,7 +98,7 @@ const HomePage = () => {
     setLoading(true);
     setError(null);
     setHasSearched(true);
-    setSearchQuery('');
+    setSearchQuery("");
     setSelectedGenre(genreId);
 
     try {
@@ -103,10 +107,10 @@ const HomePage = () => {
       setTotalPages(data.total_pages || 0);
       setCurrentPage(data.page || 1);
     } catch (err) {
-      setError('Failed to fetch movies for this genre. Please try again.');
+      setError("Failed to fetch movies for this genre. Please try again.");
       setMovies([]);
       setTotalPages(0);
-      console.error('Genre fetch error:', err);
+      console.error("Genre fetch error:", err);
     } finally {
       setLoading(false);
     }
@@ -143,35 +147,41 @@ const HomePage = () => {
 
   // Computed values
   const showMovies = !loading && !error && movies.length > 0;
-  const showNoResults = !loading && !error && hasSearched && movies.length === 0;
-  const showInitialMessage = !loading && !error && !hasSearched && !searchQuery.trim() && !selectedGenre;
+  const showNoResults =
+    !loading && !error && hasSearched && movies.length === 0;
+  const showInitialMessage =
+    !loading && !error && !hasSearched && !searchQuery.trim() && !selectedGenre;
 
   return (
-    <div 
+    <div
       className="container-sm container-md container-lg container-xl container-xxl"
-      style={{ 
-        backgroundColor: '#141414', 
-        color: 'white', 
-        minHeight: '100vh', 
-        paddingTop: '20px', 
-        paddingBottom: '20px',
-        minWidth: '60vw'
+      style={{
+        backgroundColor: "#141414",
+        color: "white",
+        minHeight: "100vh",
+        paddingTop: "20px",
+        paddingBottom: "20px",
+        minWidth: "60vw",
       }}
     >
-      <div className="bg-dark text-light p-5 mb-4 rounded-3" style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://image.tmdb.org/t/p/original/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg')`, // Example backdrop
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}>
+      <div
+        className="bg-dark text-light p-5 mb-4 rounded-3"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://image.tmdb.org/t/p/original/rULWuutDcN5NvtiZi4FRPzRYWSh.jpg')`, // Example backdrop
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <Container fluid py={5}>
-          <h1 className="display-5 fw-bold">Welcome to MovieFlix</h1>
+          <h1 className="display-5 fw-bold">Welcome to Couch Reels</h1>
           <p className="col-md-8 fs-4">
-            Discover the latest and greatest movies. Explore popular, trending, and top-rated films.
+            Discover the latest and greatest movies. Explore popular, trending,
+            and top-rated films.
           </p>
         </Container>
       </div>
       <h1 className="mb-4 text-center">Movie Search</h1>
-      
+
       <SearchBar
         searchQuery={searchQuery}
         onSearchQueryChange={handleSearchQueryChange}
@@ -181,10 +191,10 @@ const HomePage = () => {
       />
 
       <div className="text-center my-4">
-        {genres.map(genre => (
-          <Button 
-            key={genre.id} 
-            variant={selectedGenre === genre.id ? "primary" : "outline-light"} 
+        {genres.map((genre) => (
+          <Button
+            key={genre.id}
+            variant={selectedGenre === genre.id ? "primary" : "outline-light"}
             onClick={() => handleGenreClick(genre.id)}
             className="m-1"
           >
@@ -198,7 +208,7 @@ const HomePage = () => {
           {error}
         </Alert>
       )}
-      
+
       {loading && <LoadingSpinner />}
 
       {showNoResults && (
@@ -206,7 +216,7 @@ const HomePage = () => {
           No movies found. Try different keywords or genres.
         </Alert>
       )}
-      
+
       {showMovies && (
         <>
           <MovieGrid movies={movies} />
@@ -219,7 +229,7 @@ const HomePage = () => {
           )}
         </>
       )}
-      
+
       {showInitialMessage && (
         <p className="text-center mt-3">
           Please enter a search term or select a genre to find movies.

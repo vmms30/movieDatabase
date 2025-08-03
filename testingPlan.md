@@ -1,7 +1,6 @@
-
 # Application Testing Plan
 
-This document outlines the manual testing plan for the MovieFlix application. The goal is to ensure all features and routes are working as expected.
+This document outlines the manual testing plan for the Couch Reels application. The goal is to ensure all features and routes are working as expected.
 
 ---
 
