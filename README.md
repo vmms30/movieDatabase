@@ -14,6 +14,7 @@ Access the live application on GitHub Pages: [https://vmms30.github.io/movieData
 -   **Actor/Person Details:** Explore profiles of actors and other crew members, including their filmography.
 -   **Search Functionality:** Search for movies and TV shows by title.
 -   **Pagination:** Navigate through extensive lists of movies and TV shows.
+-   **Favorites Page:** Users can add and remove movies from their local favorites list.
 -   **Responsive Design:** Optimized for various screen sizes using React-Bootstrap.
 -   **Loading Indicators:** Provides a smooth user experience with loading spinners and skeleton cards.
 
@@ -103,11 +104,24 @@ Ensure your GitHub repository's Pages settings are configured to deploy from the
 
 This application interacts with The Movie Database (TMDB) API to fetch movie and TV show data. All API calls are handled through `src/services/tmdbService.js`.
 
-## Future Enhancements
+## Planned Features & Improvements
 
-Based on the `featurePlan.md`, potential future enhancements include:
+Based on the project's roadmap, the following features and technical improvements are planned:
+
+### New Features:
 
 -   **User Authentication & Account Features:** Implement user login, favorite movies, watchlists, and rated content using TMDB's authentication and account APIs.
--   **Advanced Discovery:** Add more filtering options for movie and TV show discovery.
+-   **Advanced Discovery:** Add more filtering options for movie and TV show discovery, including curated, themed collections (e.g., "Based on Your Mood," "Oscar Winners Circle").
 -   **Movie Collections:** Display details about movie collections/franchises.
--   **Company and Keyword Pages:** Allow browsing content by production companies or keywords.
+-   **"Movie Match" Quiz:** An interactive quiz to help users discover new movies based on their preferences.
+-   **Gamified "Watchlist Challenge":** Turn the watchlist/favorites feature into a game with challenges and badges.
+-   **Social Features & Community:** Allow users to share lists, reviews, and ratings with friends.
+-   **Personalized Dashboard:** A dashboard featuring recommendations, new releases from favorite actors, and a "Continue Watching" section.
+
+### Technical Improvements:
+
+-   **API Key Management:** Move the TMDB API key to a `.env` file for better security and environment management.
+-   **State Management:** Introduce a global state management library (e.g., Zustand) to centralize state logic.
+-   **Component & Code Structure:** Standardize naming conventions and refactor API service files for improved modularity.
+-   **Error Handling & User Feedback:** Implement robust error handling with user-friendly messages and retry options.
+-   **Lazy Loading Routes:** Implement route-based code splitting using `React.lazy()` and `Suspense` to improve initial load times.
